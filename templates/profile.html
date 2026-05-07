@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h4 mb-4">Профиль пользователя</h1>
+                <p class="mb-2"><strong>Логин:</strong> {{ user.username }}</p>
+                <p class="mb-2"><strong>Всего транзакций:</strong> {{ transactions_count }}</p>
+                <p class="mb-0 text-muted">Используйте разделы «Транзакции» и «Аналитика» для ведения личного бюджета.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

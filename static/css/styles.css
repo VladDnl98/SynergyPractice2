@@ -1,0 +1,46 @@
+:root {
+    --pf-red: #c1121f;
+    --pf-black: #101010;
+    --pf-white: #ffffff;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--pf-white);
+    color: var(--pf-black);
+}
+
+.card {
+    border-radius: 0.9rem;
+    border: 1px solid #efefef;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.brand-red {
+    color: #ff4d5a !important;
+}
+
+.btn-primary,
+.btn-danger {
+    background-color: var(--pf-red);
+    border-color: var(--pf-red);
+}
+
+.btn-primary:hover,
+.btn-danger:hover {
+    background-color: #a60f1a;
+    border-color: #a60f1a;
+}
+
+.btn-dark {
+    background-color: var(--pf-black);
+    border-color: var(--pf-black);
+}
+
+.text-danger {
+    color: var(--pf-red) !important;
+}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Транзакции{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Добавить транзакцию</h2>
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Сумма</label>
+                        <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="transaction_type" class="form-label">Тип</label>
+                        <select id="transaction_type" name="transaction_type" class="form-select" required>
+                            <option value="income" {% if preselected_type == 'income' %}selected{% endif %}>Доход</option>
+                            <option value="expense" {% if preselected_type == 'expense' %}selected{% endif %}>Расход</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="transaction_date" class="form-label">Дата</label>
+                        <input type="date" class="form-control" id="transaction_date" name="transaction_date" value="{{ today }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Категория</label>
+                        <select id="category" name="category" class="form-select" required>
+                            <option value="" selected disabled>Выберите категорию</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Комментарий</label>
+                        <input type="text" class="form-control" id="comment" name="comment" placeholder="Необязательно">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">История транзакций</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тип</th>
+                            <th>Категория</th>
+                            <th>Сумма</th>
+                            <th>Комментарий</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.transaction_date.strftime('%d.%m.%Y') }}</td>
+                                <td>
+                                    {% if transaction.transaction_type == 'income' %}
+                                        <span class="badge text-bg-dark">Доход</span>
+                                    {% else %}
+                                        <span class="badge text-bg-danger">Расход</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction.category }}</td>
+                                <td>{{ "%.2f"|format(transaction.amount) }} ₽</td>
+                                <td>{{ transaction.comment or "—" }}</td>
+                                <td>
+                                    <form method="post" action="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" onsubmit="return confirm('Удалить транзакцию?');">
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">Удалить</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">Транзакций пока нет.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const incomeCategories = {{ income_categories|tojson }};
+    const expenseCategories = {{ expense_categories|tojson }};
+
+    const typeSelect = document.getElementById("transaction_type");
+    const categorySelect = document.getElementById("category");
+
+    function refreshCategoryOptions() {
+        const selectedType = typeSelect.value;
+        const categories = selectedType === "income" ? incomeCategories : expenseCategories;
+        categorySelect.innerHTML = '<option value="" selected disabled>Выберите категорию</option>';
+        categories.forEach((category) => {
+            const option = document.createElement("option");
+            option.value = category;
+            option.textContent = category;
+            categorySelect.appendChild(option);
+        });
+    }
+
+    typeSelect.addEventListener("change", refreshCategoryOptions);
+    refreshCategoryOptions();
+</script>
+{% endblock %}

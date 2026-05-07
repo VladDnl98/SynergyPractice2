@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Аналитика{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Аналитика</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">За текущий месяц</p>
+                <p class="mb-1">Доходы: <strong class="text-dark">{{ "%.2f"|format(month_income) }} ₽</strong></p>
+                <p class="mb-0">Расходы: <strong class="text-danger">{{ "%.2f"|format(month_expense) }} ₽</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">За всё время</p>
+                <p class="mb-1">Доходы: <strong class="text-dark">{{ "%.2f"|format(total_income) }} ₽</strong></p>
+                <p class="mb-0">Расходы: <strong class="text-danger">{{ "%.2f"|format(total_expense) }} ₽</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Итоговый баланс</p>
+                <h2 class="h4 mb-0">{{ "%.2f"|format(total_balance) }} ₽</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Расходы по категориям (текущий месяц)</h2>
+                <canvas id="expensePieChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Доходы и расходы по месяцам</h2>
+                <canvas id="monthlyBarChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const expenseLabels = {{ expense_labels|tojson }};
+    const expenseValues = {{ expense_values|tojson }};
+    const monthLabels = {{ month_labels|tojson }};
+    const incomeValues = {{ income_values|tojson }};
+    const expenseMonthValues = {{ expense_month_values|tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}
